@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "create-user-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class BankRestControllerTest {
 
@@ -56,7 +56,7 @@ public class BankRestControllerTest {
     @Test
     public void creatNewCardTestAccessTest() throws Exception {
         String score_number = "1020304050506060707070605";
-        String expected_card_number = "1111222233334445";
+        String expected_card_number = "9674383993474839";
 
         mockMvc.perform(put("/bank/createCard/{score_number}", score_number))
                 .andExpect(status().isCreated())
@@ -107,7 +107,7 @@ public class BankRestControllerTest {
                 .param("type", type)
                 .param("title", title))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("11111111112222222223"));
+                .andExpect(content().string("983467346237647"));
     }
 
     @Test

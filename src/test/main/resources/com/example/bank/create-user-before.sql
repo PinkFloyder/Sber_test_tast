@@ -1,3 +1,13 @@
+delete from LEGAL_ACCOUNT;
+
+delete from LEGAL_PERSON;
+
+delete from CARD;
+
+delete from SCORE;
+
+delete from PEOPLE;
+
 insert into LEGAL_PERSON(address, type, title)
 values ('56A49274940F5744', 'AAA', 'Tinkoff'),
        ('9389E5736D205746',  'OOO', 'Sberbank'),
@@ -16,5 +26,4 @@ values ( '4020794086', '1020304050506060707070605');
 
 insert into CARD (CARD_NUMBER, VALIDITY, CVV, BALANCE, SCORE_NUMBER)
 values ('4276160498345534', '2021-12-09',  773, 100.88, '1020304050506060707070605');
-
 

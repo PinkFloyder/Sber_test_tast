@@ -1,8 +1,10 @@
-drop table if exists PEOPLE;
-drop table if exists SCORE;
 drop table if exists CARD;
-drop table if exists LEGAL_PERSON;
+drop table if exists SCORE;
+drop table if exists PEOPLE;
+
 drop table if exists LEGAL_ACCOUNT;
+drop table if exists LEGAL_PERSON;
+
 
 create table PEOPLE
 (
