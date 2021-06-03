@@ -1,8 +1,9 @@
 package com.example.bank.controller;
 
-import com.example.bank.service.BankServiceImpl;
-import com.example.bank.supporting.PersonForList;
-import com.example.bank.supporting.CardForList;
+import com.example.bank.service.legal.LegalService;
+import com.example.bank.service.physical.PhysicalService;
+import com.example.bank.utils.PersonForList;
+import com.example.bank.utils.CardForList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,30 +12,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bank")
-public class MyRestController {
+public class BankRestController {
 
     @Autowired
-    BankServiceImpl bankService;
+    PhysicalService physicalService;
+
+    @Autowired
+    LegalService legalService;
 
     @GetMapping("/balance/{card_number}")
     public ResponseEntity<String> getBalanceFromCardNumber(@PathVariable String card_number) {
-        return bankService.getBalanceFromCardNumber(card_number);
+        return physicalService.getBalanceFromCardNumber(card_number);
     }
 
     @GetMapping("/allCard" )
     public ResponseEntity<List<CardForList>> getListNumberCard() {
-        return bankService.getListNumberCard();
+        return physicalService.getListNumberCard();
     }
 
     @PutMapping("/createCard/{score_number}")
     public ResponseEntity<String> creatNewCard(@PathVariable String score_number) {
-        return bankService.createNewCart(score_number);
+        return physicalService.createNewCart(score_number);
     }
 
     @PostMapping("/increaseCard")
     public ResponseEntity<String> incrementBalanceFromCardNumber(@RequestParam String card_number,
                                                                  @RequestParam Float sumIncrement) {
-        return bankService.incrementBalanceFromCardNumber(card_number, sumIncrement);
+        return physicalService.incrementBalanceFromCardNumber(card_number, sumIncrement);
     }
 
 //    <--------------------> 2 ЭТАП <-------------------->
@@ -43,17 +47,17 @@ public class MyRestController {
     public ResponseEntity<String> addNewLegalPerson(@RequestParam("address") String address,
                                                     @RequestParam("type") String type,
                                                     @RequestParam("title") String title) {
-        return bankService.addNewLegalPerson(address, type, title);
+        return legalService.addNewLegalPerson(address, type, title);
     }
 
     @GetMapping("/allLegal")
     public ResponseEntity<List<PersonForList>> getListLegalPerson() {
-        return bankService.getListLegalPerson();
+        return legalService.getListLegalPerson();
     }
 
     @PostMapping("/increaseLegal")
     public ResponseEntity<String> incrementBalanceFromLegalScore(@RequestParam("score_number") String score_number,
                                                                  @RequestParam("sumIncrement") Float sumIncrement) {
-        return bankService.incrementBalanceFromLegalScore(score_number, sumIncrement);
+        return legalService.incrementBalanceFromLegalScore(score_number, sumIncrement);
     }
 }

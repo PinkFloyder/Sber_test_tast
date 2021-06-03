@@ -1,5 +1,7 @@
-package com.example.bank.supporting;
+package com.example.bank.utils;
 
+
+import java.util.Objects;
 
 public class CardForList {
 
@@ -32,5 +34,18 @@ public class CardForList {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardForList that = (CardForList) o;
+        return id == that.id && Objects.equals(number, that.number);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number);
     }
 }

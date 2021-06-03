@@ -1,4 +1,4 @@
-package com.example.bank.entity.physical_person;
+package com.example.bank.entity.person.physical;
 
 import javax.persistence.*;
 import java.util.List;

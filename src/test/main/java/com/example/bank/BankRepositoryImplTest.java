@@ -1,9 +1,10 @@
 package com.example.bank;
 
-import com.example.bank.dao.BankRepositoryImpl;
-import com.example.bank.entity.legal_person.LegalAccount;
-import com.example.bank.entity.legal_person.LegalPerson;
-import com.example.bank.entity.physical_person.Card;
+import com.example.bank.dao.legal.LegalRepositoryImpl;
+import com.example.bank.dao.physical.PhysicalRepositoryImpl;
+import com.example.bank.entity.person.legal.LegalAccount;
+import com.example.bank.entity.person.legal.LegalPerson;
+import com.example.bank.entity.person.physical.Card;
 import org.hibernate.Session;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,41 +31,44 @@ import static org.junit.Assert.*;
 public class BankRepositoryImplTest {
 
     @Autowired
-    private BankRepositoryImpl repository;
+    private PhysicalRepositoryImpl physicalRepository;
+
+    @Autowired
+    private LegalRepositoryImpl legalRepository;
 
     @Test
-    public void init_max_card_number_EmptyTest() {
+    public void initMaxCardNumberEmptyTest() {
         BigInteger expected = new BigInteger("1111222233334444");
-        ReflectionTestUtils.invokeMethod(repository, "init_max_card_number");
-        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(repository, "max_card_number");
+        ReflectionTestUtils.invokeMethod(physicalRepository, "initMaxCardNumber");
+        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(physicalRepository, "max_card_number");
         assertEquals(expected, actual);
     }
 
     @Test
     @Sql(value = {"create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = {"create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void init_max_card_number_Test() {
+    public void initMaxCardNumberTest() {
         BigInteger expected = new BigInteger("4276160498345534");
-        ReflectionTestUtils.invokeMethod(repository, "init_max_card_number");
-        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(repository, "max_card_number");
+        ReflectionTestUtils.invokeMethod(physicalRepository, "initMaxCardNumber");
+        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(physicalRepository, "max_card_number");
         assertEquals(expected, actual);
     }
 
     @Test
-    public void init_max_legal_score_number_EmptyTest() {
+    public void initMaxLegalScoreNumberEmptyTest() {
         BigInteger expected = new BigInteger("11111111112222222222");
-        ReflectionTestUtils.invokeMethod(repository, "init_max_legal_score_number");
-        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(repository, "max_legal_score_number");
+        ReflectionTestUtils.invokeMethod(legalRepository, "initMaxLegalScoreNumber");
+        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(legalRepository, "max_legal_score_number");
         assertEquals(expected, actual);
     }
 
     @Test
     @Sql(value = {"create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = {"create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void init_max_legal_score_number_Test() {
+    public void initMaxLegalScoreNumberTest() {
         BigInteger expected = new BigInteger("983467346237646");
-        ReflectionTestUtils.invokeMethod(repository, "init_max_legal_score_number");
-        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(repository, "max_legal_score_number");
+        ReflectionTestUtils.invokeMethod(legalRepository, "initMaxLegalScoreNumber");
+        BigInteger actual = (BigInteger) ReflectionTestUtils.getField(legalRepository, "max_legal_score_number");
         assertEquals(expected, actual);
     }
 
@@ -73,14 +77,14 @@ public class BankRepositoryImplTest {
         Date expected = new GregorianCalendar(2022, Calendar.JANUARY , 25).getTime();
         GregorianCalendar calendar = new GregorianCalendar(2018, Calendar.JANUARY , 25);
         Date testData = calendar.getTime();
-        Date actual = ReflectionTestUtils.invokeMethod(repository, "getNewDate", testData);
+        Date actual = ReflectionTestUtils.invokeMethod(physicalRepository, "getNewDate", testData);
         assertEquals(expected, actual);
     }
 
     @Test
     public void findNumberScoreEmptyTest() {
         String score_number = "1020304050506060707070605";
-        Boolean actual = repository.findNumberScore(score_number);
+        Boolean actual = physicalRepository.findNumberScore(score_number);
         assertFalse(actual);
     }
 
@@ -89,14 +93,14 @@ public class BankRepositoryImplTest {
     @Sql(value = {"create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findNumberScoreTest() {
         String score_number = "1020304050506060707070605";
-        Boolean actual = repository.findNumberScore(score_number);
+        Boolean actual = physicalRepository.findNumberScore(score_number);
         assertTrue(actual);
     }
 
     @Test(expected = NoResultException.class)
     public void createNewCartCrashTest() {
         String score_number = "score_number";
-        repository.createNewCart(score_number);
+        physicalRepository.createNewCart(score_number);
     }
 
     @Test
@@ -105,8 +109,8 @@ public class BankRepositoryImplTest {
     public void createNewCartTest() {
         String score_number = "1020304050506060707070605";
         String expected_card_number = "1111222233334445";
-        String actual_card_number = repository.createNewCart(score_number);
-        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(repository, "entityManager");
+        String actual_card_number = physicalRepository.createNewCart(score_number);
+        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(physicalRepository, "entityManager");
         Session session = entityManager.unwrap(Session.class);
         List<Card> actualScore = session
                 .createQuery("from Card where score_number = :score_number", Card.class)
@@ -125,7 +129,7 @@ public class BankRepositoryImplTest {
     @Test
     public void getListNumberCardCEmptyTest() {
         List<String> expected = Collections.emptyList();
-        List<String> actual = repository.getListNumberCard();
+        List<String> actual = physicalRepository.getListNumberCard();
         assertEquals(expected, actual);
     }
 
@@ -134,7 +138,7 @@ public class BankRepositoryImplTest {
     @Sql(value = {"create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getListNumberCardCTest() {
         List<String> expected = Collections.singletonList("4276160498345534");
-        List<String> actual = repository.getListNumberCard();
+        List<String> actual = physicalRepository.getListNumberCard();
         assertEquals(expected, actual);
     }
 
@@ -145,8 +149,8 @@ public class BankRepositoryImplTest {
         String card_number = "4276160498345534";
         Float sumIncrement = 100f;
         Float expectedValue = 200.88f;
-        Float actualReturn = repository.incrementBalanceFromCardNumber(card_number, sumIncrement);
-        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(repository, "entityManager");
+        Float actualReturn = physicalRepository.incrementBalanceFromCardNumber(card_number, sumIncrement);
+        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(physicalRepository, "entityManager");
         Session session = entityManager.unwrap(Session.class);
         Float actualValueInDataBase = session
                 .createQuery("select balance from Card where card_number = :card_number", Float.class)
@@ -160,7 +164,7 @@ public class BankRepositoryImplTest {
     @Test(expected = NoResultException.class)
     public void incrementBalanceFromCardNumberCrashTest() {
         String card_number = "testNumberCard";
-        repository.incrementBalanceFromCardNumber(card_number, 0f);
+        physicalRepository.incrementBalanceFromCardNumber(card_number, 0f);
     }
 
     @Test
@@ -169,14 +173,14 @@ public class BankRepositoryImplTest {
     public void getBalanceFromCardNumberTest() {
         String card_number = "4276160498345534";
         Float expected = 100.88f;
-        Float actual = repository.getBalanceFromCardNumber(card_number);
+        Float actual = physicalRepository.getBalanceFromCardNumber(card_number);
         assertEquals(expected, actual);
     }
 
     @Test(expected = NoResultException.class)
     public void getBalanceFromCardNumberCrashTest() {
         String card_number = "card_number";
-        repository.getBalanceFromCardNumber(card_number);
+        physicalRepository.getBalanceFromCardNumber(card_number);
     }
 
 //    <--------------------> 2 ЭТАП <-------------------->
@@ -188,7 +192,7 @@ public class BankRepositoryImplTest {
         String address = "56A49274940F5744";
         String type = "AAA";
         String title = "Tinkoff";
-        repository.addNewLegalPerson(address, type, title);
+        legalRepository.addNewLegalPerson(address, type, title);
     }
 
     @Test
@@ -197,8 +201,8 @@ public class BankRepositoryImplTest {
         String address = "56A49274940F5744";
         String type = "AAA";
         String title = "Tinkoff";
-        repository.addNewLegalPerson(address, type, title);
-        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(repository, "entityManager");
+        legalRepository.addNewLegalPerson(address, type, title);
+        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(physicalRepository, "entityManager");
         Session session = entityManager.unwrap(Session.class);
         LegalPerson actualLegalPerson = session
                 .createQuery("from LegalPerson where address = :address", LegalPerson.class)
@@ -212,7 +216,7 @@ public class BankRepositoryImplTest {
 
     @Test
     public void getListLegalPersonEmptyTest() {
-        List<LegalPerson> actualList = repository.getListLegalPerson();
+        List<LegalPerson> actualList = legalRepository.getListLegalPerson();
         assertEquals(Collections.emptyList(), actualList);
     }
 
@@ -228,7 +232,7 @@ public class BankRepositoryImplTest {
                 new LegalPerson("3483938W474947C5", "OAO", "Yandex",
                         Collections.singletonList(new LegalAccount( "983467346237646", "3483938W474947C5",1337.77f)))
         );
-        List<LegalPerson> actualList = repository.getListLegalPerson();
+        List<LegalPerson> actualList = legalRepository.getListLegalPerson();
         actualList.sort(Comparator.comparing(LegalPerson::getTitle));
         assertEquals(expectedList, actualList);
     }
@@ -236,7 +240,7 @@ public class BankRepositoryImplTest {
     @Test(expected = NoResultException.class)
     public void incrementBalanceFromLegalScoreCrashTest() {
         String score_number = "score_number";
-        repository.incrementBalanceFromLegalScore(score_number, 0f);
+        legalRepository.incrementBalanceFromLegalScore(score_number, 0f);
     }
 
     @Test
@@ -246,8 +250,8 @@ public class BankRepositoryImplTest {
         String score_number = "018486147512746";
         Float sumIncrement = 100f;
         Float expectedValue = 422.22f;
-        Float actualReturn = repository.incrementBalanceFromLegalScore(score_number, sumIncrement);
-        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(repository, "entityManager");
+        Float actualReturn = legalRepository.incrementBalanceFromLegalScore(score_number, sumIncrement);
+        EntityManager entityManager = (EntityManager) ReflectionTestUtils.getField(physicalRepository, "entityManager");
         Session session = entityManager.unwrap(Session.class);
         Float actualValueInDataBase = session
                 .createQuery("select balance from LegalAccount where score_number = :score_number", Float.class)
