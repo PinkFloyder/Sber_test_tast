@@ -23,14 +23,12 @@ public class PhysicalRepositoryImpl implements PhysicalRepository {
 
     @PostConstruct
     public void initMaxCardNumber() {
-        Session session = entityManager.unwrap(Session.class);
-        try {
+        try (Session session = entityManager.unwrap(Session.class)) {
             String current_max_card_number = session.createQuery("select max(card_number) from Card", String.class).getSingleResult();
             max_card_number = new BigInteger(current_max_card_number);
         } catch (NullPointerException e) {
             max_card_number = new BigInteger("1111222233334444");
         }
-        session.close();
     }
 
 
@@ -71,18 +69,18 @@ public class PhysicalRepositoryImpl implements PhysicalRepository {
 
     @Override
     public List<String> getListNumberCard() {
-        Session session = entityManager.unwrap(Session.class);
-        return session
-                .createQuery("select card_number from Card", String.class)
-                .getResultList();
+        try (Session session = entityManager.unwrap(Session.class)) {
+            return session
+                    .createQuery("select card_number from Card", String.class)
+                    .getResultList();
+        }
     }
 
 
     @Override
     @Transactional
     public Float incrementBalanceFromCardNumber(String card_number, Float sumIncrement) throws NoResultException {
-        Session session = entityManager.unwrap(Session.class);
-        try {
+        try (Session session = entityManager.unwrap(Session.class)) {
             Query query = session.createNativeQuery("select * from Card where Card.card_number = :card_number", Card.class);
             Card card = (Card) query.setParameter("card_number", card_number).getSingleResult();
             card.setBalance(card.getBalance() + sumIncrement);

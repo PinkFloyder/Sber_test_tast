@@ -25,14 +25,12 @@ public class LegalRepositoryImpl implements LegalRepository {
 
     @PostConstruct
     public void initMaxLegalScoreNumber() {
-        Session session = entityManager.unwrap(Session.class);
-        try {
+        try (Session session = entityManager.unwrap(Session.class)) {
             String current_legal_max_score_number = session.createQuery("select max(score_number) from LegalAccount ", String.class).getSingleResult();
             max_legal_score_number = new BigInteger(current_legal_max_score_number);
         } catch (NullPointerException e) {
             max_legal_score_number = new BigInteger("11111111112222222222");
         }
-        session.close();
     }
 
     @Override
@@ -48,10 +46,11 @@ public class LegalRepositoryImpl implements LegalRepository {
             LegalAccount legalAccount = new LegalAccount(max_legal_score_number.toString(), address, 0);
             LegalPerson newPerson = new LegalPerson(address, type, title, Collections.singletonList(legalAccount));
             session.save(newPerson);
-            session.close();
             return newPerson;
         }
-        session.close();
+        finally {
+            session.close();
+        }
         throw new NoResultException("Данное юридисеское лицо уже зарагестрировано");
     }
 
@@ -67,8 +66,7 @@ public class LegalRepositoryImpl implements LegalRepository {
     @Override
     @Transactional
     public Float incrementBalanceFromLegalScore(String score_number, Float sumIncrement) throws NoResultException {
-        Session session = entityManager.unwrap(Session.class);
-        try {
+        try (Session session = entityManager.unwrap(Session.class)) {
             Query query = session.createQuery("from LegalAccount where score_number = : score_number", LegalAccount.class);
             LegalAccount account = (LegalAccount) query.setParameter("score_number", score_number).getSingleResult();
             account.setBalance(account.getBalance() + sumIncrement);
