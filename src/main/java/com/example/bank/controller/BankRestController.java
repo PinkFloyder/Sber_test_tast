@@ -5,9 +5,11 @@ import com.example.bank.service.physical.PhysicalService;
 import com.example.bank.utils.PersonForList;
 import com.example.bank.utils.CardForList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
