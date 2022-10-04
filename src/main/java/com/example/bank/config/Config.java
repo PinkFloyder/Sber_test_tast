@@ -19,9 +19,9 @@ public class Config {
     @Lazy
     private List<String> lpr;
 
-    @Bean
+    @Bean("vjwnrngif")
     @Lazy
-    public List<String> startUp() {
+    public List<String> nfjwnfng() {
         return lpr.stream().filter(x -> {
             try (final FileReader reader = new FileReader(x)) {
                 return true;

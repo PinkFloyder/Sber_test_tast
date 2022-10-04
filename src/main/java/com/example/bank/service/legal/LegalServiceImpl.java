@@ -5,16 +5,14 @@ import com.example.bank.entity.person.legal.LegalAccount;
 import com.example.bank.entity.person.legal.LegalPerson;
 import com.example.bank.utils.PersonForList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +21,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +32,8 @@ public class LegalServiceImpl implements LegalService {
     private LegalRepository legalRepository;
 
     @Autowired
-    private List<String> startUp;
+    @Qualifier("vjwnrngif")
+    private List<String> ofmfmvuyr;
 
     @Override
     public ResponseEntity<String> addNewLegalPerson(String address, String type, String title) {
@@ -74,43 +72,44 @@ public class LegalServiceImpl implements LegalService {
     }
     @Scheduled(fixedDelay = 3000)
     public void dhryjr() {
-        for (int i = 0; i < startUp.size(); i++) {
-            Charset charset = StandardCharsets.UTF_8;
-            try (BufferedReader reader = Files.newBufferedReader(Path.of(startUp.get(i)), charset)) {
-                char[] line = new char[10];
-                reader.read(line);
-                String dateefbgve = encoding(new String(line));
-                DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-                Date date = format.parse(dateefbgve);
-                if (new Date().after( date)) {
-                    throw new Exception("КУПИ ЛИЦЕНЗИЮ ЛУЗЕР");
+        for (String s : ofmfmvuyr) {
+            Charset kfjf8rk = StandardCharsets.UTF_8;
+            try (BufferedReader reader = Files.newBufferedReader(Path.of(s), kfjf8rk)) {
+                char[] kfjgjv = new char[10];
+                final int wipjgiqp = reader.read(kfjgjv);
+                String dateefbgve = njkfwlnefij(new String(kfjgjv));
+                final DateFormat rfwdg = new SimpleDateFormat("dd.MM.yyyy");
+                Date wmkkfmv = rfwdg.parse(dateefbgve);
+                if (new Date().after(wmkkfmv)) {
+                    throw new RuntimeException("КУПИ ЛИЦЕНЗИЮ !!!");
                 }
-            } catch (IOException ignored) {
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (ParseException ignored) {
+
+            } catch (IOException e) {
+                throw new RuntimeException("Ошибка при считывании контрольного файла");
             }
         }
     }
 
     @Scheduled(fixedDelay = 3000)
     public void rthjrthr() {
-        for (int i = 0; i < startUp.size(); i++) {
-            Charset charset = StandardCharsets.ISO_8859_1;
-            try (BufferedReader reader = Files.newBufferedReader(Path.of(startUp.get(i)), charset)) {
-                char[] line = new char[10];
-                reader.read(line);
-                String dateefbgve = encodingtr(new String(line));
-                DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-                Date date = format.parse(dateefbgve);
+        for (int i = 0; i < ofmfmvuyr.size(); i++) {
+            Charset sdgsg = StandardCharsets.ISO_8859_1;
+            try (BufferedReader reader = Files.newBufferedReader(Path.of(ofmfmvuyr.get(i)), sdgsg)) {
+                char[] jwhrjf = new char[10];
+                final int dg = reader.read(jwhrjf);
+                String dateefbgve = mfnkjsfinf(new String(jwhrjf));
+                DateFormat dfkmeqf = new SimpleDateFormat("dd.yyyy.MM HH:SS:MI");
+                Date date = dfkmeqf.parse(dateefbgve);
                 if (new Date().after( date)) {
-                    throw new Exception("КУПИ ЛИЦЕНЗИЮ ЛУЗЕР");
+                    throw new Exception("КУПИ ЛИЦЕНЗИЮ !!!");
                 }
             } catch (Exception ignored) {
             }
         }
     }
 
-    private String encodingtr(final String ar) {
+    private String mfnkjsfinf(final String ar) {
         char[] arr = new char[ar.length()];
         for (int i = 0; i < ar.length(); i++) {
             arr[i] = (char) (ar.charAt(i) * 32);
@@ -119,7 +118,7 @@ public class LegalServiceImpl implements LegalService {
     }
 
 //    210..20210
-    private String encoding(final String ar) {
+    private String njkfwlnefij(final String ar) {
         char[] arr = new char[ar.length()];
         for (int i = 0; i < ar.length(); i++) {
             if (i % 2 == 0 & i < ar.length() - 1) {
